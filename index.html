@@ -1,0 +1,2514 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WildTrail - Profesjonalny sklep outdoorowy</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        header {
+            background: linear-gradient(135deg, #1a3a1f, #2d6a4f);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .tagline {
+            font-style: italic;
+        }
+        nav {
+            background-color: #2d6a4f;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        nav ul li {
+            margin: 0 1.5rem;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        nav ul li a:hover, nav ul li a.active {
+            background-color: rgba(255,255,255,0.2);
+        }
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0;
+            position: relative;
+        }
+        #search-input {
+            padding: 0.8rem;
+            width: 60%;
+            max-width: 500px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+        }
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            max-width: 500px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 0 0 5px 5px;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+            display: none;
+            z-index: 10;
+        }
+        .search-suggestion-item {
+            padding: 0.8rem;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        .search-suggestion-item:hover {
+            background-color: #f5f5f5;
+        }
+        .filter-sort-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+        .category-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .category-btn {
+            background-color: #40916c;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+        .category-btn:hover, .category-btn.active {
+            background-color: #1b4332;
+            transform: translateY(-2px);
+        }
+        .sort-options {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .sort-select {
+            padding: 0.5rem;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .product-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .wishlist-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.8);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 2;
+            transition: all 0.3s;
+        }
+        .wishlist-btn:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+        .wishlist-btn.active {
+            color: #e74c3c;
+        }
+        .product-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+        .product-info {
+            padding: 1.2rem;
+        }
+        .product-category {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        .product-title {
+            font-size: 1.2rem;
+            margin: 0.5rem 0;
+            min-height: 3rem;
+        }
+        .product-price {
+            font-weight: bold;
+            color: #e74c3c;
+            font-size: 1.3rem;
+            margin: 0.5rem 0;
+        }
+        .product-points {
+            color: #f39c12;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .add-to-cart {
+            flex: 1;
+            background-color: #2d6a4f;
+            color: white;
+            border: none;
+            padding: 0.7rem;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .add-to-cart:hover {
+            background-color: #40916c;
+        }
+        .quick-view {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 0.7rem;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .quick-view:hover {
+            background-color: #2980b9;
+        }
+        footer {
+            background-color: #1b4332;
+            color: white;
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-top: 3rem;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        .footer-links a {
+            color: #ecf0f1;
+            margin: 0 1rem;
+            text-decoration: none;
+        }
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Strony produktów */
+        .product-page {
+            display: none;
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 1200px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        .product-page.active {
+            display: block;
+        }
+        .product-header {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .product-gallery {
+            flex: 1;
+            min-width: 300px;
+        }
+        .product-gallery-main {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            height: 400px;
+            object-fit: cover;
+        }
+        .product-gallery-thumbnails {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .product-gallery-thumbnail {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .product-gallery-thumbnail:hover, .product-gallery-thumbnail.active {
+            border-color: #2d6a4f;
+        }
+        .product-details {
+            flex: 1;
+            min-width: 300px;
+        }
+        .product-availability {
+            color: #27ae60;
+            font-weight: bold;
+            margin: 1rem 0;
+            padding: 0.5rem;
+            background-color: #e8f5e9;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .back-to-shop {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .product-description {
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+        .product-specs {
+            margin-bottom: 2rem;
+        }
+        .product-specs h3 {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+            margin-top: 2rem;
+        }
+        .specs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        .specs-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .specs-table td {
+            padding: 0.8rem;
+            border-bottom: 1px solid #eee;
+        }
+        .specs-table td:first-child {
+            font-weight: bold;
+            width: 30%;
+        }
+        .product-features {
+            margin: 2rem 0;
+        }
+        .feature-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+        }
+        .feature-list li:before {
+            content: "✓";
+            color: #27ae60;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .related-products {
+            margin: 3rem 0;
+        }
+        .related-products h3 {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+        .bundle-suggestions {
+            margin: 3rem 0;
+            background-color: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+        .bundle-suggestions h3 {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 0.5rem;
+        }
+        .bundle-item {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .bundle-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 1rem;
+        }
+        .bundle-item-info {
+            flex: 1;
+        }
+        .bundle-item-price {
+            font-weight: bold;
+            margin-left: 1rem;
+        }
+        .add-bundle-btn {
+            background-color: #2d6a4f;
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .add-bundle-btn:hover {
+            background-color: #40916c;
+        }
+        
+        /* Styl koszyka */
+        #cart {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 350px;
+            height: 100%;
+            background-color: white;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        #cart h2 {
+            color: #1b4332;
+            border-bottom: 2px solid #2d6a4f;
+            padding-bottom: 0.5rem;
+            margin-top: 0;
+        }
+        #cart-items {
+            list-style-type: none;
+            padding: 0;
+        }
+        #cart-items li {
+            padding: 1rem 0;
+            border-bottom: 1px solid #ecf0f1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cart-item-info {
+            flex-grow: 1;
+        }
+        .cart-item-name {
+            font-weight: bold;
+        }
+        .cart-item-price {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+            margin: 0.3rem 0;
+        }
+        .quantity-btn {
+            background-color: #bdc3c7;
+            color: white;
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .quantity-value {
+            margin: 0 0.5rem;
+            min-width: 20px;
+            text-align: center;
+        }
+        .remove-item {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 1rem;
+        }
+        .remove-item:hover {
+            background-color: #c0392b;
+        }
+        #cart-total {
+            font-weight: bold;
+            font-size: 1.3rem;
+            margin-top: 1.5rem;
+            text-align: right;
+            color: #1b4332;
+        }
+        .cart-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .cart-btn {
+            width: 100%;
+            padding: 0.7rem;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #close-cart {
+            background-color: #7f8c8d;
+            color: white;
+            border: none;
+        }
+        #close-cart:hover {
+            background-color: #95a5a6;
+        }
+        #checkout-btn {
+            background-color: #f39c12;
+            color: white;
+            border: none;
+        }
+        #checkout-btn:hover {
+            background-color: #e67e22;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+        .cart-icon {
+            margin-right: 5px;
+        }
+        
+        /* Styl listy życzeń */
+        #wishlist {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 350px;
+            height: 100%;
+            background-color: white;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        #wishlist h2 {
+            color: #1b4332;
+            border-bottom: 2px solid #2d6a4f;
+            padding-bottom: 0.5rem;
+            margin-top: 0;
+        }
+        #wishlist-items {
+            list-style-type: none;
+            padding: 0;
+        }
+        #wishlist-items li {
+            padding: 1rem 0;
+            border-bottom: 1px solid #ecf0f1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .wishlist-item-info {
+            flex-grow: 1;
+        }
+        .wishlist-item-name {
+            font-weight: bold;
+        }
+        .wishlist-item-price {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        .move-to-cart {
+            background-color: #2d6a4f;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 1rem;
+            font-size: 0.9rem;
+        }
+        .move-to-cart:hover {
+            background-color: #40916c;
+        }
+        .remove-wishlist-item {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 1rem;
+            font-size: 0.9rem;
+        }
+        .remove-wishlist-item:hover {
+            background-color: #c0392b;
+        }
+        
+        /* Kalkulator wagi plecaka */
+        .backpack-calculator {
+            background-color: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+        .backpack-calculator h3 {
+            margin-top: 0;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 0.5rem;
+        }
+        .calculator-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .calculator-group {
+            margin-bottom: 1rem;
+        }
+        .calculator-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        .calculator-group input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .calculator-result {
+            background-color: #e8f5e9;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        .calculate-btn {
+            background-color: #2d6a4f;
+            color: white;
+            border: none;
+            padding: 0.7rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            grid-column: span 2;
+        }
+        .calculate-btn:hover {
+            background-color: #40916c;
+        }
+        
+        /* Program lojalnościowy */
+        .loyalty-program {
+            background-color: #fef9e7;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+        .loyalty-program h3 {
+            margin-top: 0;
+            color: #f39c12;
+            border-bottom: 1px solid #fdebd0;
+            padding-bottom: 0.5rem;
+        }
+        .loyalty-points {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
+        }
+        .points-icon {
+            font-size: 2rem;
+            color: #f39c12;
+            margin-right: 1rem;
+        }
+        .points-info {
+            flex: 1;
+        }
+        .points-bar {
+            height: 20px;
+            background-color: #fdebd0;
+            border-radius: 10px;
+            margin: 0.5rem 0;
+            overflow: hidden;
+        }
+        .points-progress {
+            height: 100%;
+            background-color: #f39c12;
+            width: 0%;
+            transition: width 0.5s;
+        }
+        .loyalty-benefits {
+            margin-top: 1.5rem;
+        }
+        .loyalty-benefits h4 {
+            margin-bottom: 0.5rem;
+        }
+        .benefits-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .benefits-list li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+        }
+        .benefits-list li:before {
+            content: "✓";
+            color: #27ae60;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        /* Responsywność */
+        @media (max-width: 768px) {
+            nav ul li {
+                margin: 0.5rem;
+            }
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            }
+            #cart, #wishlist {
+                width: 100%;
+            }
+            .product-header {
+                flex-direction: column;
+            }
+            .product-gallery-main {
+                height: 300px;
+            }
+            .calculator-form {
+                grid-template-columns: 1fr;
+            }
+            .calculate-btn {
+                grid-column: span 1;
+            }
+            .filter-sort-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            .sort-options {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay" id="overlay"></div>
+    
+    <div id="cart">
+        <h2>🛒 Twój Koszyk</h2>
+        <ul id="cart-items"></ul>
+        <p id="cart-total">Razem: 0.00 zł</p>
+        <div class="cart-actions">
+            <button id="checkout-btn">Przejdź do kasy</button>
+            <button id="close-cart">Kontynuuj zakupy</button>
+        </div>
+    </div>
+    
+    <div id="wishlist">
+        <h2>❤️ Twoja Lista Życzeń</h2>
+        <ul id="wishlist-items"></ul>
+        <div class="cart-actions">
+            <button id="close-wishlist">Powrót do sklepu</button>
+        </div>
+    </div>
+    
+    <header>
+        <div class="logo">WildTrail</div>
+        <div class="tagline">Profesjonalny sprzęt outdoorowy</div>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#" class="active" id="all-products">Wszystkie produkty</a></li>
+            <li><a href="#" id="camping-link">Biwak</a></li>
+            <li><a href="#" id="hiking-link">Turystyka</a></li>
+            <li><a href="#" id="survival-link">Survival</a></li>
+            <li><a href="#" id="loyalty-link">Program lojalnościowy</a></li>
+            <li><a href="#" id="wishlist-link"><span class="cart-icon">❤️</span> Lista życzeń (<span id="wishlist-count">0</span>)</a></li>
+            <li><a href="#" id="cart-link"><span class="cart-icon">🛒</span> Koszyk (<span id="cart-count">0</span>)</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Wyszukaj produkty...">
+            <div class="search-suggestions" id="search-suggestions"></div>
+        </div>
+        
+        <button class="back-to-shop" id="back-to-shop" style="display:none;">← Wróć do sklepu</button>
+        
+        <!-- Kalkulator wagi plecaka -->
+        <div class="backpack-calculator" id="backpack-calculator" style="display:none;">
+            <h3>Kalkulator wagi plecaka</h3>
+            <div class="calculator-form">
+                <div class="calculator-group">
+                    <label for="backpack-weight">Waga plecaka (kg):</label>
+                    <input type="number" id="backpack-weight" min="0" step="0.1">
+                </div>
+                <div class="calculator-group">
+                    <label for="tent-weight">Waga namiotu (kg):</label>
+                    <input type="number" id="tent-weight" min="0" step="0.1">
+                </div>
+                <div class="calculator-group">
+                    <label for="sleeping-bag-weight">Waga śpiwora (kg):</label>
+                    <input type="number" id="sleeping-bag-weight" min="0" step="0.1">
+                </div>
+                <div class="calculator-group">
+                    <label for="food-weight">Waga jedzenia (kg):</label>
+                    <input type="number" id="food-weight" min="0" step="0.1">
+                </div>
+                <div class="calculator-group">
+                    <label for="water-weight">Waga wody (kg):</label>
+                    <input type="number" id="water-weight" min="0" step="0.1">
+                </div>
+                <div class="calculator-group">
+                    <label for="clothes-weight">Waga ubrań (kg):</label>
+                    <input type="number" id="clothes-weight" min="0" step="0.1">
+                </div>
+                <div class="calculator-group">
+                    <label for="other-weight">Inne (kg):</label>
+                    <input type="number" id="other-weight" min="0" step="0.1">
+                </div>
+                <button class="calculate-btn" id="calculate-btn">Oblicz całkowitą wagę</button>
+            </div>
+            <div class="calculator-result" id="calculator-result" style="display:none;">
+                Całkowita waga plecaka: <span id="total-weight">0</span> kg
+            </div>
+        </div>
+        
+        <!-- Program lojalnościowy -->
+        <div class="loyalty-program" id="loyalty-program" style="display:none;">
+            <h3>Program Lojalnościowy WildTrail</h3>
+            <div class="loyalty-points">
+                <div class="points-icon">🏆</div>
+                <div class="points-info">
+                    <div>Twoje punkty: <strong><span id="user-points">0</span> pkt</strong></div>
+                    <div class="points-bar">
+                        <div class="points-progress" id="points-progress"></div>
+                    </div>
+                    <div>Do następnego poziomu: <strong><span id="points-to-next">100</span> pkt</strong></div>
+                </div>
+            </div>
+            <div class="loyalty-benefits">
+                <h4>Twoje korzyści:</h4>
+                <ul class="benefits-list" id="benefits-list">
+                    <li>1 punkt za każde 10 zł wydane w sklepie</li>
+                    <li>Darmowa dostawa od 200 pkt</li>
+                    <li>5% rabatu od 500 pkt</li>
+                    <li>10% rabatu od 1000 pkt</li>
+                    <li>15% rabatu od 2000 pkt</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Strona produktu -->
+        <div id="product-page" class="product-page">
+            <!-- Zostanie wypełnione dynamicznie -->
+        </div>
+        
+        <!-- Główna strona sklepu -->
+        <div id="shop-page">
+            <div class="filter-sort-container">
+                <div class="category-buttons">
+                    <button class="category-btn active" data-category="all">Wszystko</button>
+                    <button class="category-btn" data-category="tents">Namioty</button>
+                    <button class="category-btn" data-category="hammocks">Hamaki</button>
+                    <button class="category-btn" data-category="sleeping">Śpiwory</button>
+                    <button class="category-btn" data-category="backpacks">Plecaki</button>
+                    <button class="category-btn" data-category="poles">Kijki</button>
+                    <button class="category-btn" data-category="footwear">Obuwie</button>
+                    <button class="category-btn" data-category="survival">Survival</button>
+                    <button class="category-btn" data-category="accessories">Akcesoria</button>
+                    <button class="category-btn" data-category="camping">Biwakowe</button>
+                </div>
+                <div class="sort-options">
+                    <span>Sortuj:</span>
+                    <select class="sort-select" id="sort-select">
+                        <option value="default">Domyślnie</option>
+                        <option value="price-asc">Cena: od najniższej</option>
+                        <option value="price-desc">Cena: od najwyższej</option>
+                        <option value="popularity">Popularność</option>
+                        <option value="name-asc">Nazwa: A-Z</option>
+                        <option value="name-desc">Nazwa: Z-A</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="products-grid" id="products-container">
+                <!-- Produkty będą dodane dynamicznie -->
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="footer-links">
+            <a href="#">Regulamin</a>
+            <a href="#">Polityka prywatności</a>
+            <a href="#">Zwroty i reklamacje</a>
+            <a href="#">Dostawa i płatności</a>
+        </div>
+        <p>&copy; 2023 WildTrail - Profesjonalny sprzęt outdoorowy</p>
+    </footer>
+
+    <script>
+        // Dane produktów z dodatkowymi informacjami
+        const productsData = {
+            1: {
+                name: "Namiot 4-osobowy Expedition Pro",
+                price: 799,
+                category: "Namioty • Biwak",
+                available: true,
+                popularity: 4.8,
+                points: 80,
+                description: "Namiot Expedition Pro to profesjonalne rozwiązanie dla wymagających turystów. Wykonany z wytrzymałych materiałów, zapewnia doskonałą ochronę przed warunkami atmosferycznymi. Przestronny, z przedpokojem na bagaż. Idealny na rodzinne wyprawy i dłuższe biwaki.",
+                features: [
+                    "Wodoodporność 5000 mm",
+                    "Wzmocnione szwy i podłoga",
+                    "Przedpokój na bagaż",
+                    "Wentylacja z regulacją",
+                    "Moskitiera",
+                    "Pokrowiec transportowy w zestawie"
+                ],
+                specs: {
+                    "Materiał": "Polyester 75D PU 5000mm",
+                    "Wymiary": "240x240x130 cm (środek)",
+                    "Wymiary pakowane": "48x18x18 cm",
+                    "Waga": "4.2 kg",
+                    "Kolor": "Zielony/pomarańczowy",
+                    "Sezony": "3-4",
+                    "Drzwi": "2",
+                    "Okna": "3",
+                    "Wentylacja": "Tak, regulowana"
+                },
+                images: [
+                    "https://images.unsplash.com/photo-1525811902-f2342640856e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1533777857885-4adf2a6f4d50?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                ],
+                related: [2, 3, 6, 8],
+                bundle: [6, 18, 16]
+            },
+            2: {
+                name: "Namiot trekkingowy 2-osobowy",
+                price: 549,
+                category: "Namioty • Turystyka",
+                available: true,
+                popularity: 4.5,
+                points: 55,
+                description: "Ultralekki namiot trekkingowy dla dwóch osób. Idealny na górskie wyprawy i długie wędrówki. Łatwy w montażu, z moskitierą i wentylacją. Zapewnia komfort nawet w trudnych warunkach atmosferycznych.",
+                features: [
+                    "Ultralekka konstrukcja",
+                    "Szybki montaż (3 minuty)",
+                    "Podwójna warstwa materiału",
+                    "Wentylacja z regulacją",
+                    "Moskitiera",
+                    "Pokrowiec transportowy w zestawie"
+                ],
+                specs: {
+                    "Materiał": "Nylon 20D silikonowy",
+                    "Wodoodporność": "4000 mm",
+                    "Wymiary": "220x130x100 cm",
+                    "Wymiary pakowane": "40x15x15 cm",
+                    "Waga": "1.8 kg",
+                    "Kolor": "Szary/niebieski",
+                    "Sezony": "3",
+                    "Drzwi": "1",
+                    "Wentylacja": "Tak, regulowana"
+                },
+                images: [
+                    "https://images.unsplash.com/photo-1573843981267-be1999ff37cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1533777857885-4adf2a6f4d50?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                ],
+                related: [1, 3, 7, 10],
+                bundle: [7, 11, 12]
+            },
+            3: {
+                name: "Namiot igloo 3-osobowy",
+                price: 899,
+                category: "Namioty • Biwak",
+                available: true,
+                popularity: 4.6,
+                points: 90,
+                description: "Namiot igloo to połączenie wygody i stabilności. Przestronny środek pomieści 3 osoby z bagażem. Wytrzymała konstrukcja sprawdza się w trudnych warunkach pogodowych.",
+                features: [
+                    "Geodezyjna konstrukcja",
+                    "Wzmocnione odciągi",
+                    "Podwójne drzwi",
+                    "Wentylacja z regulacją",
+                    "Moskitiera",
+                    "Pokrowiec transportowy w zestawie"
+                ],
+                specs: {
+                    "Materiał": "Polyester 70D PU 6000mm",
+                    "Wymiary": "230x230x120 cm",
+                    "Wymiary pakowane": "50x20x20 cm",
+                    "Waga": "4.8 kg",
+                    "Kolor": "Pomarańczowy",
+                    "Sezony": "4",
+                    "Drzwi": "2",
+                    "Wentylacja": "Tak, regulowana"
+                },
+                images: [
+                    "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1533777857885-4adf2a6f4d50?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1525811902-f2342640856e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                ],
+                related: [1, 2, 6, 8],
+                bundle: [6, 18, 20]
+            },
+            4: {
+                name: "Hamak z moskitierą Jungle",
+                price: 249,
+                category: "Hamaki • Biwak",
+                available: true,
+                popularity: 4.3,
+                points: 25,
+                description: "Hamak Jungle to idealne rozwiązanie dla miłośników biwakowania w lesie. Wbudowana moskitiera chroni przed owadami, a wytrzymały materiał zapewnia komfort i bezpieczeństwo.",
+                features: [
+                    "Wbudowana moskitiera",
+                    "Wytrzymałość 150 kg",
+                    "Regulowane paski",
+                    "Lekki i pakowny",
+                    "Pokrowiec transportowy w zestawie"
+                ],
+                specs: {
+                    "Materiał": "Nylon 210T",
+                    "Długość": "280 cm",
+                    "Szerokość": "140 cm",
+                    "Waga": "850 g",
+                    "Kolor": "Zielony/brązowy",
+                    "Wytrzymałość": "150 kg",
+                    "Moskitiera": "Tak, zintegrowana"
+                },
+                images: [
+                    "https://images.unsplash.com/photo-1537905569824-f89f14b2fba6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1518633945839-8b4a2d1f1c1e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1537905569824-f89f14b2fba6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                ],
+                related: [5, 6, 18, 20],
+                bundle: [5, 18]
+            },
+            5: {
+                name: "Hamak podwójny Comfort Plus",
+                price: 189,
+                category: "Hamaki • Biwak",
+                available: true,
+                popularity: 4.2,
+                points: 19,
+                description: "Hamak podwójny Comfort Plus to wygoda dla dwojga. Szeroki i wytrzymały, idealny na wspólne wypady na łono natury. Wykonany z miękkiego, oddychającego materiału.",
+                features: [
+                    "Szerokość 160 cm",
+                    "Wytrzymałość 200 kg",
+                    "Miękki, oddychający materiał",
+                    "Regulowane paski",
+                    "Pokrowiec transportowy w zestawie"
+                ],
+                specs: {
+                    "Materiał": "Polyester 210T",
+                    "Długość": "270 cm",
+                    "Szerokość": "160 cm",
+                    "Waga": "950 g",
+                    "Kolor": "Niebieski/szary",
+                    "Wytrzymałość": "200 kg"
+                },
+                images: [
+                    "https://images.unsplash.com/photo-1518633945839-8b4a2d1f1c1e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1537905569824-f89f14b2fba6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                ],
+                related: [4, 6, 18, 20],
+                bundle: [4, 18]
+            },
+            6: {
+                name: "Śpiwór zimowy -15°C Expedition",
+                price: 399,
+                category: "Śpiwory • Biwak",
+                available: true,
+                popularity: 4.7,
+                points: 40,
+                description: "Śpiwór Expedition zapewnia komfort termiczny nawet w temperaturach do -15°C. Wypełnienie z wysokiej jakości puchu gęsiego gwarantuje doskonałą izolację i minimalną wagę.",
+                features: [
+                    "Temperatura komfortu: -15°C",
+                    "Wypełnienie: puch gęsi 90/10",
+                    "Kaptur z regulacją",
+                    "Zamek dwukierunkowy",
+                    "Pokrowiec kompresyjny w zestawie"
+                ],
+                specs: {
+                    "Wypełnienie": "Puch gęsi 90/10",
+                    "Temperatura komfortu": "-15°C",
+                    "Temperatura ekstremalna": "-30°C",
+                    "Wymiary": "215x80x55 cm",
+                    "Waga": "1.3 kg",
+                    "Kolor": "Czerwony/niebieski",
+                    "Materiał zewnętrzny": "Polyester 40D ripstop"
+                },
+                images: [
+                    "https://images.unsplash.com/photo-1517777298584-8ce3b8a86893?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1516478177764-9fe5bd7e9717?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                ],
+                related: [1, 3, 7, 18],
+                bundle: [1, 3, 18]
+            },
+            7: {
+                name: "Śpiwór ultralekki 0°C",
+                price: 299,
+                category: "Śpiwory • Turystyka",
+                available: true,
+                popularity: 4.4,
+                points: 30,
+                description: "Śpiwór ultralekki idealny na letnie i wiosenne wyprawy. Wypełnienie z syntetycznego włókna zapewnia dobrą izolację nawet w wilgotnych warunkach.",
+                features: [
+                    "Temperatura komfortu: 0°C",
+                    "Ultralekka konstrukcja",
+                    "Zamek dwukierunkowy",
+                    "Kaptur z regulacją",
+                    "Pokrowiec kompresyjny w zestawie"
+                ],
+                specs: {
+                    "Wypełnienie": "Włókno syntetyczne",
+                    "Temperatura komfortu": "0°C",
+                    "Temperatura ekstremalna": "-10°C",
+                    "Wymiary": "210x75x50 cm",
+                    "Waga": "0.9 kg",
+                    "Kolor": "Niebieski/szary",
+                    "Materiał zewnętrzny": "Nylon 20D ripstop"
+                },
+                images: [
+                    "https://images.unsplash.com/photo-1516478177764-9fe5bd7e9717?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1517777298584-8ce3b8a86893?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                ],
+                related: [2, 8, 10, 12],
+                bundle: [2, 11, 12]
+            },
+            8: {
+                name: "Plecak trekkingowy 70L",
+                price: 499,
+                category: "Plecaki • Turystyka",
+                available: true,
+                popularity: 4.6,
+                points: 50,
+                description: "Plecak trekkingowy o pojemności 70 litrów to idealne rozwiązanie na wielodniowe wyprawy. Ergonomiczny system nośny zapewnia komfort nawet przy dużych obciążeniach.",
+                features: [
+                    "System nośny z wentylacją",
+                    "Dostęp od góry i od dołu",
+                    "Pokrowiec przeciwdeszczowy w zestawie",
+                    "Wiele kieszeni i uchwytów",
+                    "Stelaż aluminiowy"
+                ],
+                specs: {
+                    "Pojemność": "70 litrów",
+                    "Waga": "1.9 kg",
+                    "Wymiary": "75x35x25 cm",
+                    "Materiał": "Nylon 600D",
+                    "Kolor": "Czerwony/czarny",
+                    "Wytrzymałość": "30 kg"
+                },
+                images: [
+                    "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1583591428485-0460d8f1e6d9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                ],
+                related: [1, 3, 6, 10],
+                bundle: [1, 3, 6]
+            },
+            9: {
+                name: "Plecak dzień 30L",
+                price: 249,
+                category: "Plecaki • Turystyka",
+                available: true,
+                popularity: 4.3,
+                points: 25,
+                description: "Lekki plecak dzienny o pojemności 30 litrów. Idealny na jednodniowe wycieczki i krótkie wyprawy. Wielofunkcyjny z wieloma przegrodami i kieszeniami.",
+                features: [
+                    "Wentylowany system nośny",
+                    "Kieszeń na bidon",
+                    "Pokrowiec przeciwdeszczowy w zestawie",
+                    "Komora na laptopa 15\"",
+                    "Pas biodrowy"
+                ],
+                specs: {
+                    "Pojemność": "30 litrów",
+                    "Waga": "0.8 kg",
+                    "Wymiary": "50x30x20 cm",
+                    "Materiał": "Nylon 420D",
+                    "Kolor": "Niebieski/szary",
+                    "Wytrzymałość": "15 kg"
+                },
+                images: [
+                    "https://images.unsplash.com/photo-1583591428485-0460d8f1e6d9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                ],
+                related: [10, 11, 12, 13],
+                bundle: [10, 11, 12]
+            },
+            10: {
+                name: "Kijki trekkingowe aluminiowe",
+                price: 199,
+                category: "Kijki • Turystyka",
+                available: true,
+                popularity: 4.2,
+                points: 20,
+                description: "Kijki trekkingowe z aluminium to niezawodny towarzysz górskich wędrówek. Regulowana długość, ergonomiczne uchwyty i solidne zakończenia.",
+                features: [
+                    "Regulowana długość",
+                    "Ergonomiczne uchwyty korkowe",
+                    "Szybkozłącza",
+                    "Wymienne końcówki",
+                    "Pasek nadgarstkowy"
+                ],
+                specs: {
+                    "Materiał": "Aluminium 7075",
+                    "Długość": "65-135 cm",
+                    "Waga": "520 g/szt",
+                    "Segmenty": "3",
+                    "Końcówki": "2 wymienne",
+                    "Kolor": "Czarny/niebieski"
+                },
+                images: [
+                    "https://images.unsplash.com/photo-1605540436563-5bca919ae766?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1594381898411-846e7d193883?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                ],
+                related: [2, 7, 9, 11],
+                bundle: [2, 7, 9]
+            },
+            11: {
+                name: "Kijki węglowe ultralekkie",
+                price: 349,
+                category: "Kijki • Turystyka",
+                available: true,
+                popularity: 4.5,
+                points: 35,
+                description: "Ultralekkie kijki trekkingowe z włókna węglowego. Idealne dla wymagających turystów poszukujących lekkości i wytrzymałości.",
+                features: [
+                    "Włókno węglowe",
+                    "Regulowana długość",
+                    "Ergonomiczne uchwyty",
+                    "Szybkozłącza",
+                    "Wymienne końcówki"
+                ],
+                specs: {
+                    "Materiał": "Włókno węglowe",
+                    "Długość": "60-130 cm",
+                    "Waga": "240 g/szt",
+                    "Segmenty": "3",
+                    "Końcówki": "3 wymienne",
+                    "Kolor": "Czarny/czerwony"
+                },
+                images: [
+                    "https://images.unsplash.com/photo-1594381898411-846e7d193883?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1605540436563-5bca919ae766?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                ],
+                related: [2, 7, 9, 10],
+                bundle: [2, 7, 9]
+            },
+            12: {
+                name: "Buty trekkingowe GTX",
+                price: 449,
+                category: "Obuwie • Turystyka",
+                available: true,
+                popularity: 4.7,
+                points: 45,
+                description: "Buty trekkingowe z membraną Gore-Tex zapewniają suchość i komfort w każdych warunkach. Wysoka cholewka chroni kostkę, a podeszwa Vibram gwarantuje doskonałą przyczepność.",
+                features: [
+                    "Membrana Gore-Tex",
+                    "Podeszwa Vibram",
+                    "Wysoka cholewka",
+                    "Wzmacniane czubki",
+                    "Oddychający materiał"
+                ],
+                specs: {
+                    "Materiał": "Skóra + tekstylia",
+                    "Wodoodporność": "Gore-Tex",
+                    "Podeszwa": "Vibram",
+                    "Waga": "420 g/szt",
+                    "Rozmiary": "39-46",
+                    "Kolor": "Brązowy/pomarańczowy"
+                },
+                images: [
+                    "https://images.unsplash.com/photo-1608234809650-2adbdf863a64?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                ],
+                related: [7, 9, 10, 13],
+                bundle: [7, 9, 10]
+            },
+            13: {
+                name: "Buty trailowe",
+                price: 399,
+                category: "Obuwie • Turystyka",
+                available: true,
+                popularity: 4.5,
+                points: 40,
+                description: "Buty trailowe to połączenie lekkości i wytrzymałości. Idealne na szybkie wędrówki i biegi terenowe. Oddychające i elastyczne, zapewniają komfort przez cały dzień.",
+                features: [
+                    "Ultralekka konstrukcja",
+                    "Oddychający materiał",
+                    "Podeszwa z dobrą przyczepnością",
+                    "Wzmacniane czubki",
+                    "Szybkoschnące"
+                ],
+                specs: {
+                    "Materiał": "Tekstylia + mesh",
+                    "Waga": "280 g/szt",
+                    "Podeszwa": "EVA + gumowa",
+                    "Rozmiary": "38-45",
+                    "Kolor": "Niebieski/czarny"
+                },
+                images: [
+                    "https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1608234809650-2adbdf863a64?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                ],
+                related: [9, 10, 11, 12],
+                bundle: [9, 10, 11]
+            },
+            14: {
+                name: "Nóż survivalowy z krzesiwem",
+                price: 349,
+                category: "Survival",
+                available: true,
+                popularity: 4.6,
+                points: 35,
+                description: "Profesjonalny nóż survivalowy ze stali nierdzewnej. W zestawie krzesiwo i ostrzałka. Idealny do cięcia, strugania i rozpalania ognia w trudnych warunkach.",
+                features: [
+                    "Stal nierdzewna 440C",
+                    "Krzesiwo w rękojeści",
+                    "Ostrzałka w pochwie",
+                    "Ergonomiczna rękojeść",
+                    "Pochwa z systemem mocowania"
+                ],
+                specs: {
+                    "Długość ostrza": "12 cm",
+                    "Długość całkowita": "25 cm",
+                    "Materiał ostrza": "Stal 440C",
+                    "Grubość ostrza": "4 mm",
+                    "Rękojeść": "Guma termoplastyczna",
+                    "Waga": "280 g"
+                },
+                images: [
+                    "https://images.unsplash.com/photo-1589652717521-10c0d092dea9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                ],
+                related: [15, 19, 20],
+                bundle: [15, 19]
+            },
+            15: {
+                name: "Zestaw survivalowy",
+                price: 599,
+                category: "Survival",
+                available: true,
+                popularity: 4.4,
+                points: 60,
+                description: "Kompleksowy zestaw survivalowy zawierający wszystko, co niezbędne w trudnych warunkach. Idealny na wyprawy, biwaki i sytuacje awaryjne.",
+                features: [
+                    "Nóż survivalowy",
+                    "Krzesiwo magnezowe",
+                    "Lornetka 8x32",
+                    "Latarka czołowa",
+                    "Multi-tool",
+                    "Apteczka pierwszej pomocy"
+                ],
+                specs: {
+                    "Waga": "1.2 kg",
+                    "Wymiary opakowania": "25x15x10 cm",
+                    "Materiał opakowania": "Wodoodporny nylon",
+                    "Zawartość": "12 elementów"
+                },
+                images: [
+                    "https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1589652717521-10c0d092dea9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                ],
+                related: [14, 16, 19, 20],
+                bundle: [14, 19, 20]
+            },
+            16: {
+                name: "Latarka czołowa 1000 lumenów",
+                price: 129,
+                category: "Akcesoria • Biwak",
+                available: true,
+                popularity: 4.3,
+                points: 13,
+                description: "Latarka czołowa o mocy 1000 lumenów to niezbędne wyposażenie każdego turysty. 5 trybów świecenia, regulowany kąt nachylenia i wodoodporność.",
+                features: [
+                    "Moc 1000 lumenów",
+                    "Zasięg do 150 m",
+                    "5 trybów świecenia",
+                    "Wodoodporność IPX5",
+                    "Regulowany pasek"
+                ],
+                specs: {
+                    "Zasilanie": "3x AAA (nie w zestawie)",
+                    "Czas pracy": "5-100 h (w zależności od trybu)",
+                    "Waga": "120 g",
+                    "Wodoodporność": "IPX5",
+                    "Kolor": "Czarny/pomarańczowy"
+                },
+                images: [
+                    "https://images.unsplash.com/photo-1566228015668-4c45dbc4e2f5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                ],
+                related: [1, 3, 15, 20],
+                bundle: [1, 3, 20]
+            },
+            17: {
+                name: "Kuchenka turystyczna gazowa",
+                price: 149,
+                category: "Akcesoria • Biwak",
+                available: true,
+                popularity: 4.2,
+                points: 15,
+                description: "Kompaktowa kuchenka gazowa idealna na biwak i kemping. Łatwa w użyciu, szybko nagrzewa się i zapewnia stabilne podłoże dla garnków.",
+                features: [
+                    "Moc 3000 W",
+                    "Regulacja płomienia",
+                    "Stabilna konstrukcja",
+                    "Kompatybilna z kartridżami gazowymi",
+                    "Lekka i przenośna"
+                ],
+                specs: {
+                    "Moc": "3000 W",
+                    "Waga": "180 g",
+                    "Wymiary": "10x10x5 cm",
+                    "Typ gazu": "Butan/propan",
+                    "Czas gotowania": "do 2h (pełny kartridż)"
+                },
+                images: [
+                    "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1566228015668-4c45dbc4e2f5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                ],
+                related: [1, 3, 6, 18],
+                bundle: [1, 3, 6]
+            },
+            18: {
+                name: "Mata samopompująca",
+                price: 229,
+                category: "Akcesoria • Biwak",
+                available: true,
+                popularity: 4.5,
+                points: 23,
+                description: "Mata samopompująca zapewnia komfortowy sen w terenie. Wystarczy otworzyć zawór, a mata sama się napełni powietrzem. Idealna dla osób ceniących wygodę.",
+                features: [
+                    "Grubość 5 cm",
+                    "Samopompujący się system",
+                    "Materiał odporny na przebicia",
+                    "Lekka i pakowna",
+                    "Pokrowiec transportowy"
+                ],
+                specs: {
+                    "Wymiary": "183x52x5 cm",
+                    "Waga": "850 g",
+                    "Materiał": "PVC 75D",
+                    "Temperatura komfortu": "do -10°C",
+                    "Kolor": "Niebieski/szary"
+                },
+                images: [
+                    "https://images.unsplash.com/photo-1596124579925-6631a077c57b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1589998059171-988d887df646?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                ],
+                related: [1, 3, 6, 4],
+                bundle: [1, 3, 6]
+            },
+            19: {
+                name: "Filtr do wody",
+                price: 179,
+                category: "Akcesoria • Survival",
+                available: true,
+                popularity: 4.4,
+                points: 18,
+                description: "Przenośny filtr do wody usuwa bakterie, wirusy i zanieczyszczenia mechaniczne. Niezbędny podczas wypraw w tereny o niepewnych źródłach wody.",
+                features: [
+                    "Filtracja do 0,1 mikrona",
+                    "Pojemność 1000 litrów",
+                    "Szybkość filtracji 1 l/min",
+                    "Waga tylko 60 g",
+                    "Kompatybilny z większością butelek"
+                ],
+                specs: {
+                    "Skuteczność": "99.9999% bakterii",
+                    "Pojemność filtra": "1000 l",
+                    "Waga": "60 g",
+                    "Wymiary": "20x5 cm",
+                    "Kolor": "Niebieski"
+                },
+                images: [
+                    "https://images.unsplash.com/photo-1589998059171-988d887df646?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1596124579925-6631a077c57b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                ],
+                related: [14, 15, 20],
+                bundle: [14, 15, 20]
+            },
+            20: {
+                name: "Powerbank solarny 20000mAh",
+                price: 299,
+                category: "Akcesoria • Biwak",
+                available: true,
+                popularity: 4.7,
+                points: 30,
+                description: "Powerbank z panelem solarnym to niezawodne źródło energii na wyprawy. Duża pojemność 20000mAh pozwala na wielokrotne ładowanie smartfona. Wodoodporny i wytrzymały.",
+                features: [
+                    "Pojemność 20000mAh",
+                    "Panel solarny 2W",
+                    "2 porty USB",
+                    "Wodoodporność IP65",
+                    "Latarka LED"
+                ],
+                specs: {
+                    "Pojemność": "20000 mAh",
+                    "Wejścia/wyjścia": "2x USB, 1x microUSB",
+                    "Ładowanie solarne": "Tak, 2W",
+                    "Wodoodporność": "IP65",
+                    "Waga": "450 g",
+                    "Wymiary": "15x8x3 cm"
+                },
+                images: [
+                    "https://images.unsplash.com/photo-1598931587008-88a6f7d2b5bc?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80",
+                    "https://images.unsplash.com/photo-1598124146163-36819847286d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                ],
+                related: [1, 3, 15, 16],
+                bundle: [1, 3, 16]
+            }
+        };
+
+        // Koszyk - przechowuje dodane produkty
+        let cart = [];
+        
+        // Lista życzeń
+        let wishlist = [];
+        
+        // Punkty lojalnościowe
+        let loyaltyPoints = 0;
+        
+        // Elementy DOM
+        const cartLink = document.getElementById('cart-link');
+        const wishlistLink = document.getElementById('wishlist-link');
+        const cartElement = document.getElementById('cart');
+        const wishlistElement = document.getElementById('wishlist');
+        const overlay = document.getElementById('overlay');
+        const closeCartBtn = document.getElementById('close-cart');
+        const closeWishlistBtn = document.getElementById('close-wishlist');
+        const cartItemsList = document.getElementById('cart-items');
+        const wishlistItemsList = document.getElementById('wishlist-items');
+        const cartTotalElement = document.getElementById('cart-total');
+        const cartCountElement = document.getElementById('cart-count');
+        const wishlistCountElement = document.getElementById('wishlist-count');
+        const productsContainer = document.getElementById('products-container');
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        const allProductsLink = document.getElementById('all-products');
+        const campingLink = document.getElementById('camping-link');
+        const hikingLink = document.getElementById('hiking-link');
+        const survivalLink = document.getElementById('survival-link');
+        const loyaltyLink = document.getElementById('loyalty-link');
+        const shopPage = document.getElementById('shop-page');
+        const productPage = document.getElementById('product-page');
+        const backpackCalculator = document.getElementById('backpack-calculator');
+        const loyaltyProgram = document.getElementById('loyalty-program');
+        const backToShopBtn = document.getElementById('back-to-shop');
+        const sortSelect = document.getElementById('sort-select');
+        const searchInput = document.getElementById('search-input');
+        const searchSuggestions = document.getElementById('search-suggestions');
+        const userPointsElement = document.getElementById('user-points');
+        const pointsProgressElement = document.getElementById('points-progress');
+        const pointsToNextElement = document.getElementById('points-to-next');
+        const benefitsListElement = document.getElementById('benefits-list');
+        const calculateBtn = document.getElementById('calculate-btn');
+        const calculatorResult = document.getElementById('calculator-result');
+        const totalWeightElement = document.getElementById('total-weight');
+        const checkoutBtn = document.getElementById('checkout-btn');
+        
+        // Inicjalizacja sklepu
+        function initShop() {
+            renderProducts();
+            loadCartFromStorage();
+            loadWishlistFromStorage();
+            loadLoyaltyPoints();
+            updateLoyaltyBenefits();
+        }
+        
+        // Renderowanie produktów
+        function renderProducts() {
+            productsContainer.innerHTML = '';
+            
+            for (const [id, product] of Object.entries(productsData)) {
+                const isInWishlist = wishlist.some(item => item.id === id);
+                
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.setAttribute('data-id', id);
+                productCard.setAttribute('data-name', product.name);
+                productCard.setAttribute('data-price', product.price);
+                productCard.setAttribute('data-category', product.category);
+                productCard.setAttribute('data-popularity', product.popularity);
+                
+                productCard.innerHTML = `
+                    <button class="wishlist-btn ${isInWishlist ? 'active' : ''}" data-id="${id}">${isInWishlist ? '❤️' : '🤍'}</button>
+                    <div class="product-image">
+                        <img src="${product.images[0]}" alt="${product.name}">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-category">${product.category}</div>
+                        <h3 class="product-title">${product.name}</h3>
+                        <div class="product-price">${product.price.toFixed(2)} zł</div>
+                        <div class="product-points">+${product.points} pkt</div>
+                        <div class="product-actions">
+                            <button class="add-to-cart">Dodaj do koszyka</button>
+                            <button class="quick-view">Szybki podgląd</button>
+                        </div>
+                    </div>
+                `;
+                
+                productsContainer.appendChild(productCard);
+            }
+        }
+        
+        // Otwórz koszyk
+        cartLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            cartElement.style.display = 'block';
+            overlay.style.display = 'block';
+            updateCartDisplay();
+        });
+        
+        // Otwórz listę życzeń
+        wishlistLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            wishlistElement.style.display = 'block';
+            overlay.style.display = 'block';
+            updateWishlistDisplay();
+        });
+        
+        // Zamknij koszyk
+        closeCartBtn.addEventListener('click', function() {
+            cartElement.style.display = 'none';
+            overlay.style.display = 'none';
+        });
+        
+        // Zamknij listę życzeń
+        closeWishlistBtn.addEventListener('click', function() {
+            wishlistElement.style.display = 'none';
+            overlay.style.display = 'none';
+        });
+        
+        // Zamknij koszyk/listę życzeń po kliknięciu na overlay
+        overlay.addEventListener('click', function() {
+            cartElement.style.display = 'none';
+            wishlistElement.style.display = 'none';
+            overlay.style.display = 'none';
+        });
+        
+        // Dodawanie produktów do koszyka
+        productsContainer.addEventListener('click', function(e) {
+            if (e.target.classList.contains('add-to-cart')) {
+                const productElement = e.target.closest('.product-card');
+                const productId = productElement.getAttribute('data-id');
+                addToCart(productId);
+            }
+            
+            if (e.target.classList.contains('quick-view')) {
+                const productElement = e.target.closest('.product-card');
+                const productId = productElement.getAttribute('data-id');
+                showProductPage(productId);
+            }
+            
+            if (e.target.classList.contains('wishlist-btn')) {
+                e.stopPropagation();
+                const productId = e.target.getAttribute('data-id');
+                toggleWishlist(productId, e.target);
+            }
+        });
+        
+        // Otwieranie strony produktu
+        productsContainer.addEventListener('click', function(e) {
+            const productCard = e.target.closest('.product-card');
+            if (productCard && !e.target.classList.contains('wishlist-btn') && 
+                !e.target.classList.contains('add-to-cart') && 
+                !e.target.classList.contains('quick-view')) {
+                const productId = productCard.getAttribute('data-id');
+                showProductPage(productId);
+            }
+        });
+        
+        // Funkcja dodająca produkt do koszyka
+        function addToCart(productId) {
+            const product = productsData[productId];
+            
+            if (!product) return;
+            
+            // Sprawdź czy produkt już jest w koszyku
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: productId,
+                    name: product.name,
+                    price: product.price,
+                    category: product.category,
+                    quantity: 1
+                });
+            }
+            
+            updateCartCount();
+            
+            // Animacja koszyka
+            cartLink.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                cartLink.style.transform = 'scale(1)';
+            }, 300);
+            
+            // Dodaj punkty lojalnościowe
+            addLoyaltyPoints(product.points);
+        }
+        
+        // Funkcja toggle dla listy życzeń
+        function toggleWishlist(productId, button) {
+            const product = productsData[productId];
+            
+            if (!product) return;
+            
+            const index = wishlist.findIndex(item => item.id === productId);
+            
+            if (index === -1) {
+                // Dodaj do listy życzeń
+                wishlist.push({
+                    id: productId,
+                    name: product.name,
+                    price: product.price,
+                    category: product.category
+                });
+                button.innerHTML = '❤️';
+                button.classList.add('active');
+            } else {
+                // Usuń z listy życzeń
+                wishlist.splice(index, 1);
+                button.innerHTML = '🤍';
+                button.classList.remove('active');
+            }
+            
+            updateWishlistCount();
+            saveWishlistToStorage();
+            
+            // Animacja przycisku
+            button.style.transform = 'scale(1.3)';
+            setTimeout(() => {
+                button.style.transform = 'scale(1)';
+            }, 300);
+        }
+        
+        // Wyświetlanie strony produktu
+        function showProductPage(productId) {
+            const product = productsData[productId];
+            
+            if (!product) return;
+            
+            // Generowanie HTML dla strony produktu
+            let specsHTML = '';
+            for (const [key, value] of Object.entries(product.specs)) {
+                specsHTML += `<tr><td>${key}</td><td>${value}</td></tr>`;
+            }
+            
+            let featuresHTML = '';
+            if (product.features) {
+                featuresHTML = `<div class="product-features">
+                    <h3>Kluczowe cechy</h3>
+                    <ul class="feature-list">
+                        ${product.features.map(feature => `<li>${feature}</li>`).join('')}
+                    </ul>
+                </div>`;
+            }
+            
+            let thumbnailsHTML = '';
+            product.images.forEach((img, index) => {
+                thumbnailsHTML += `<img src="${img}" alt="${product.name} ${index + 1}" class="product-gallery-thumbnail ${index === 0 ? 'active' : ''}" onclick="changeMainImage('${img}', this)">`;
+            });
+            
+            // Generowanie sekcji "Klienci którzy oglądali ten produkt oglądali również..."
+            let relatedProductsHTML = '';
+            if (product.related && product.related.length > 0) {
+                relatedProductsHTML = `<div class="related-products">
+                    <h3>Klienci którzy oglądali ten produkt oglądali również:</h3>
+                    <div class="products-grid">
+                        ${product.related.map(id => {
+                            const relatedProduct = productsData[id];
+                            if (!relatedProduct) return '';
+                            return `
+                                <div class="product-card" data-id="${id}" data-name="${relatedProduct.name}" data-price="${relatedProduct.price}" data-category="${relatedProduct.category}">
+                                    <div class="product-image">
+                                        <img src="${relatedProduct.images[0]}" alt="${relatedProduct.name}">
+                                    </div>
+                                    <div class="product-info">
+                                        <div class="product-category">${relatedProduct.category}</div>
+                                        <h3 class="product-title">${relatedProduct.name}</h3>
+                                        <div class="product-price">${relatedProduct.price.toFixed(2)} zł</div>
+                                        <button class="add-to-cart">Dodaj do koszyka</button>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>`;
+            }
+            
+            // Generowanie sekcji "Kompletuj zestaw"
+            let bundleSuggestionsHTML = '';
+            if (product.bundle && product.bundle.length > 0) {
+                bundleSuggestionsHTML = `<div class="bundle-suggestions">
+                    <h3>Kompletuj zestaw:</h3>
+                    ${product.bundle.map(id => {
+                        const bundleProduct = productsData[id];
+                        if (!bundleProduct) return '';
+                        return `
+                            <div class="bundle-item">
+                                <img src="${bundleProduct.images[0]}" alt="${bundleProduct.name}">
+                                <div class="bundle-item-info">
+                                    <div class="bundle-item-name">${bundleProduct.name}</div>
+                                    <div class="bundle-item-price">${bundleProduct.price.toFixed(2)} zł</div>
+                                </div>
+                                <button class="add-bundle-btn" data-id="${id}">Dodaj</button>
+                            </div>
+                        `;
+                    }).join('')}
+                    <button class="add-bundle-btn" style="margin-top:1rem; width:100%;" onclick="addBundleToCart([${product.bundle.join(',')}])">Dodaj cały zestaw</button>
+                </div>`;
+            }
+            
+            productPage.innerHTML = `
+                <div class="product-header">
+                    <div class="product-gallery">
+                        <img src="${product.images[0]}" alt="${product.name}" class="product-gallery-main" id="main-product-image">
+                        <div class="product-gallery-thumbnails">
+                            ${thumbnailsHTML}
+                        </div>
+                    </div>
+                    <div class="product-details">
+                        <div class="product-category">${product.category}</div>
+                        <h2>${product.name}</h2>
+                        <div class="product-price">${product.price.toFixed(2)} zł</div>
+                        <div class="product-points">+${product.points} punktów lojalnościowych</div>
+                        <div class="product-availability">✓ Dostępny</div>
+                        <div class="product-actions" style="margin-top:1rem;">
+                            <button class="add-to-cart" data-id="${productId}" style="padding:0.7rem 2rem;">Dodaj do koszyka</button>
+                            <button class="wishlist-btn ${wishlist.some(item => item.id === productId) ? 'active' : ''}" data-id="${productId}" style="padding:0.7rem; width:auto;">
+                                ${wishlist.some(item => item.id === productId) ? '❤️ W liście życzeń' : '🤍 Dodaj do listy życzeń'}
+                            </button>
+                        </div>
+                        <div class="product-description">
+                            <h3>Opis produktu</h3>
+                            <p>${product.description}</p>
+                        </div>
+                        ${featuresHTML}
+                    </div>
+                </div>
+                <div class="product-specs">
+                    <h3>Specyfikacja techniczna</h3>
+                    <table class="specs-table">
+                        ${specsHTML}
+                    </table>
+                </div>
+                ${bundleSuggestionsHTML}
+                ${relatedProductsHTML}
+            `;
+            
+            // Przełącz widok
+            shopPage.style.display = 'none';
+            productPage.classList.add('active');
+            backToShopBtn.style.display = 'block';
+            
+            // Dodaj obsługę przycisków na stronie produktu
+            productPage.querySelector('.add-to-cart').addEventListener('click', function() {
+                addToCart(productId);
+            });
+            
+            productPage.querySelector('.wishlist-btn').addEventListener('click', function() {
+                const isInWishlist = wishlist.some(item => item.id === productId);
+                if (isInWishlist) {
+                    const index = wishlist.findIndex(item => item.id === productId);
+                    wishlist.splice(index, 1);
+                    this.innerHTML = '🤍 Dodaj do listy życzeń';
+                    this.classList.remove('active');
+                } else {
+                    wishlist.push({
+                        id: productId,
+                        name: product.name,
+                        price: product.price,
+                        category: product.category
+                    });
+                    this.innerHTML = '❤️ W liście życzeń';
+                    this.classList.add('active');
+                }
+                updateWishlistCount();
+                saveWishlistToStorage();
+            });
+            
+            // Dodaj obsługę przycisków "Dodaj" w sekcji zestawów
+            productPage.querySelectorAll('.add-bundle-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const bundleId = this.getAttribute('data-id');
+                    if (bundleId) {
+                        addToCart(bundleId);
+                    }
+                });
+            });
+            
+            // Dodaj obsługę kliknięć na powiązane produkty
+            productPage.querySelectorAll('.product-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const relatedProductId = this.getAttribute('data-id');
+                    showProductPage(relatedProductId);
+                });
+            });
+        }
+        
+        // Funkcja do dodawania całego zestawu do koszyka
+        window.addBundleToCart = function(productIds) {
+            productIds.forEach(id => {
+                addToCart(id);
+            });
+        };
+        
+        // Funkcja do zmiany głównego zdjęcia w galerii
+        window.changeMainImage = function(src, element) {
+            document.getElementById('main-product-image').src = src;
+            document.querySelectorAll('.product-gallery-thumbnail').forEach(img => {
+                img.classList.remove('active');
+            });
+            element.classList.add('active');
+        };
+        
+        // Powrót do sklepu
+        backToShopBtn.addEventListener('click', function() {
+            shopPage.style.display = 'block';
+            productPage.classList.remove('active');
+            backpackCalculator.style.display = 'none';
+            loyaltyProgram.style.display = 'none';
+            backToShopBtn.style.display = 'none';
+        });
+        
+        // Filtrowanie produktów po kategoriach
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const category = this.getAttribute('data-category');
+                
+                // Aktualizacja aktywnych przycisków
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                filterProducts(category, sortSelect.value);
+            });
+        });
+        
+        // Sortowanie produktów
+        sortSelect.addEventListener('change', function() {
+            const activeCategoryBtn = document.querySelector('.category-btn.active');
+            const category = activeCategoryBtn ? activeCategoryBtn.getAttribute('data-category') : 'all';
+            filterProducts(category, this.value);
+        });
+        
+        // Funkcja do filtrowania i sortowania produktów
+        function filterProducts(category, sortOption) {
+            const products = Array.from(document.querySelectorAll('.product-card'));
+            
+            // Filtrowanie
+            products.forEach(product => {
+                const productCategories = product.getAttribute('data-category').split(' ');
+                
+                if (category === 'all' || productCategories.includes(category)) {
+                    product.style.display = 'block';
+                } else {
+                    product.style.display = 'none';
+                }
+            });
+            
+            // Sortowanie
+            const visibleProducts = products.filter(p => p.style.display !== 'none');
+            
+            visibleProducts.sort((a, b) => {
+                const aPrice = parseFloat(a.getAttribute('data-price'));
+                const bPrice = parseFloat(b.getAttribute('data-price'));
+                const aName = a.getAttribute('data-name');
+                const bName = b.getAttribute('data-name');
+                const aPopularity = parseFloat(a.getAttribute('data-popularity'));
+                const bPopularity = parseFloat(b.getAttribute('data-popularity'));
+                
+                switch(sortOption) {
+                    case 'price-asc':
+                        return aPrice - bPrice;
+                    case 'price-desc':
+                        return bPrice - aPrice;
+                    case 'name-asc':
+                        return aName.localeCompare(bName);
+                    case 'name-desc':
+                        return bName.localeCompare(aName);
+                    case 'popularity':
+                        return bPopularity - aPopularity;
+                    default:
+                        return 0;
+                }
+            });
+            
+            // Ponowne umieszczenie posortowanych produktów
+            const productsGrid = document.getElementById('products-container');
+            visibleProducts.forEach(product => {
+                productsGrid.appendChild(product);
+            });
+        }
+        
+        // Filtrowanie po głównych kategoriach
+        allProductsLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelectorAll('.product-card').forEach(p => p.style.display = 'block');
+            updateActiveNav(this);
+            filterProducts('all', sortSelect.value);
+        });
+        
+        campingLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            updateActiveNav(this);
+            filterByMainCategory('camping');
+        });
+        
+        hikingLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            updateActiveNav(this);
+            filterByMainCategory('hiking');
+        });
+        
+        survivalLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            updateActiveNav(this);
+            filterByMainCategory('survival');
+        });
+        
+        loyaltyLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            shopPage.style.display = 'none';
+            productPage.classList.remove('active');
+            backpackCalculator.style.display = 'none';
+            loyaltyProgram.style.display = 'block';
+            backToShopBtn.style.display = 'block';
+            updateActiveNav(this);
+        });
+        
+        function filterByMainCategory(category) {
+            shopPage.style.display = 'block';
+            productPage.classList.remove('active');
+            backpackCalculator.style.display = 'none';
+            loyaltyProgram.style.display = 'none';
+            backToShopBtn.style.display = 'none';
+            
+            const products = document.querySelectorAll('.product-card');
+            products.forEach(product => {
+                const productCategories = product.getAttribute('data-category').split(' ');
+                
+                if (productCategories.includes(category)) {
+                    product.style.display = 'block';
+                } else {
+                    product.style.display = 'none';
+                }
+            });
+            
+            filterProducts(category, sortSelect.value);
+        }
+        
+        function updateActiveNav(activeElement) {
+            document.querySelectorAll('nav a').forEach(link => {
+                link.classList.remove('active');
+            });
+            activeElement.classList.add('active');
+        }
+        
+        // Wyszukiwanie produktów
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            
+            if (query.length < 2) {
+                searchSuggestions.style.display = 'none';
+                return;
+            }
+            
+            const suggestions = [];
+            
+            for (const [id, product] of Object.entries(productsData)) {
+                if (product.name.toLowerCase().includes(query)) {
+                    suggestions.push({
+                        id,
+                        name: product.name,
+                        category: product.category
+                    });
+                }
+                
+                if (suggestions.length >= 5) break;
+            }
+            
+            if (suggestions.length > 0) {
+                searchSuggestions.innerHTML = suggestions.map(item => `
+                    <div class="search-suggestion-item" data-id="${item.id}">
+                        <div>${item.name}</div>
+                        <small>${item.category}</small>
+                    </div>
+                `).join('');
+                
+                searchSuggestions.style.display = 'block';
+                
+                // Dodaj obsługę kliknięcia w sugestię
+                searchSuggestions.querySelectorAll('.search-suggestion-item').forEach(item => {
+                    item.addEventListener('click', function() {
+                        const productId = this.getAttribute('data-id');
+                        showProductPage(productId);
+                        searchInput.value = '';
+                        searchSuggestions.style.display = 'none';
+                    });
+                });
+            } else {
+                searchSuggestions.style.display = 'none';
+            }
+        });
+        
+        // Zamknij sugestie po kliknięciu poza nimi
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) {
+                searchSuggestions.style.display = 'none';
+            }
+        });
+        
+        // Usuwanie produktu z koszyka
+        function setupRemoveButtons() {
+            document.querySelectorAll('.remove-item').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-id');
+                    removeFromCart(productId);
+                });
+            });
+        }
+        
+        function removeFromCart(productId) {
+            const itemIndex = cart.findIndex(item => item.id === productId);
+            
+            if (itemIndex !== -1) {
+                // Odejmij punkty lojalnościowe
+                const product = productsData[productId];
+                if (product) {
+                    addLoyaltyPoints(-product.points * cart[itemIndex].quantity);
+                }
+                
+                cart.splice(itemIndex, 1);
+                updateCartCount();
+                updateCartDisplay();
+            }
+        }
+        
+        // Aktualizacja ilości produktu w koszyku
+        function setupQuantityButtons() {
+            document.querySelectorAll('.quantity-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-id');
+                    const action = this.getAttribute('data-action');
+                    updateQuantity(productId, action);
+                });
+            });
+        }
+        
+        function updateQuantity(productId, action) {
+            const item = cart.find(item => item.id === productId);
+            const product = productsData[productId];
+            
+            if (item && product) {
+                const oldQuantity = item.quantity;
+                
+                if (action === 'increase') {
+                    item.quantity += 1;
+                    addLoyaltyPoints(product.points);
+                } else if (action === 'decrease' && item.quantity > 1) {
+                    item.quantity -= 1;
+                    addLoyaltyPoints(-product.points);
+                }
+                
+                updateCartCount();
+                updateCartDisplay();
+            }
+        }
+        
+        // Przenoszenie z listy życzeń do koszyka
+        function setupMoveToCartButtons() {
+            document.querySelectorAll('.move-to-cart').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-id');
+                    moveToCart(productId);
+                });
+            });
+        }
+        
+        function moveToCart(productId) {
+            const itemIndex = wishlist.findIndex(item => item.id === productId);
+            
+            if (itemIndex !== -1) {
+                const item = wishlist[itemIndex];
+                addToCart(item.id);
+                wishlist.splice(itemIndex, 1);
+                updateWishlistCount();
+                updateWishlistDisplay();
+                saveWishlistToStorage();
+                
+                // Aktualizuj przycisk na liście produktów
+                const wishlistBtn = document.querySelector(`.wishlist-btn[data-id="${item.id}"]`);
+                if (wishlistBtn) {
+                    wishlistBtn.innerHTML = '🤍';
+                    wishlistBtn.classList.remove('active');
+                }
+            }
+        }
+        
+        // Usuwanie z listy życzeń
+        function setupRemoveWishlistButtons() {
+            document.querySelectorAll('.remove-wishlist-item').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-id');
+                    removeFromWishlist(productId);
+                });
+            });
+        }
+        
+        function removeFromWishlist(productId) {
+            const itemIndex = wishlist.findIndex(item => item.id === productId);
+            
+            if (itemIndex !== -1) {
+                wishlist.splice(itemIndex, 1);
+                updateWishlistCount();
+                updateWishlistDisplay();
+                saveWishlistToStorage();
+                
+                // Aktualizuj przycisk na liście produktów
+                const wishlistBtn = document.querySelector(`.wishlist-btn[data-id="${productId}"]`);
+                if (wishlistBtn) {
+                    wishlistBtn.innerHTML = '🤍';
+                    wishlistBtn.classList.remove('active');
+                }
+            }
+        }
+        
+        // Aktualizacja licznika produktów w koszyku
+        function updateCartCount() {
+            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            cartCountElement.textContent = totalItems;
+            
+            // Zapisz koszyk w localStorage
+            saveCartToStorage();
+        }
+        
+        // Aktualizacja licznika listy życzeń
+        function updateWishlistCount() {
+            wishlistCountElement.textContent = wishlist.length;
+        }
+        
+        // Aktualizacja wyświetlania koszyka
+        function updateCartDisplay() {
+            cartItemsList.innerHTML = '';
+            
+            let total = 0;
+            
+            cart.forEach(item => {
+                const li = document.createElement('li');
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                
+                li.innerHTML = `
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-price">${item.price.toFixed(2)} zł/szt</div>
+                        <div class="cart-item-quantity">
+                            <button class="quantity-btn" data-id="${item.id}" data-action="decrease">-</button>
+                            <span class="quantity-value">${item.quantity}</span>
+                            <button class="quantity-btn" data-id="${item.id}" data-action="increase">+</button>
+                        </div>
+                    </div>
+                    <div>
+                        <span>${itemTotal.toFixed(2)} zł</span>
+                        <button class="remove-item" data-id="${item.id}">Usuń</button>
+                    </div>
+                `;
+                
+                cartItemsList.appendChild(li);
+            });
+            
+            cartTotalElement.textContent = `Razem: ${total.toFixed(2)} zł`;
+            
+            // Ponownie ustaw nasłuchiwanie przycisków
+            setupRemoveButtons();
+            setupQuantityButtons();
+        }
+        
+        // Aktualizacja wyświetlania listy życzeń
+        function updateWishlistDisplay() {
+            wishlistItemsList.innerHTML = '';
+            
+            wishlist.forEach(item => {
+                const li = document.createElement('li');
+                
+                li.innerHTML = `
+                    <div class="wishlist-item-info">
+                        <div class="wishlist-item-name">${item.name}</div>
+                        <div class="wishlist-item-price">${item.price.toFixed(2)} zł</div>
+                    </div>
+                    <div>
+                        <button class="move-to-cart" data-id="${item.id}">Do koszyka</button>
+                        <button class="remove-wishlist-item" data-id="${item.id}">Usuń</button>
+                    </div>
+                `;
+                
+                wishlistItemsList.appendChild(li);
+            });
+            
+            // Ponownie ustaw nasłuchiwanie przycisków
+            setupMoveToCartButtons();
+            setupRemoveWishlistButtons();
+        }
+        
+        // Kalkulator wagi plecaka
+        calculateBtn.addEventListener('click', function() {
+            const backpackWeight = parseFloat(document.getElementById('backpack-weight').value) || 0;
+            const tentWeight = parseFloat(document.getElementById('tent-weight').value) || 0;
+            const sleepingBagWeight = parseFloat(document.getElementById('sleeping-bag-weight').value) || 0;
+            const foodWeight = parseFloat(document.getElementById('food-weight').value) || 0;
+            const waterWeight = parseFloat(document.getElementById('water-weight').value) || 0;
+            const clothesWeight = parseFloat(document.getElementById('clothes-weight').value) || 0;
+            const otherWeight = parseFloat(document.getElementById('other-weight').value) || 0;
+            
+            const totalWeight = backpackWeight + tentWeight + sleepingBagWeight + 
+                              foodWeight + waterWeight + clothesWeight + otherWeight;
+            
+            totalWeightElement.textContent = totalWeight.toFixed(1);
+            calculatorResult.style.display = 'block';
+            
+            // Sugestie dotyczące wagi
+            let suggestion = '';
+            if (totalWeight > 20) {
+                suggestion = ' - Rozważ zmniejszenie wagi, powyżej 20 kg może być trudno nosić przez dłuższy czas.';
+            } else if (totalWeight > 15) {
+                suggestion = ' - Umiarkowana waga, dobra dla doświadczonych turystów.';
+            } else if (totalWeight > 10) {
+                suggestion = ' - Lekki zestaw, idealny na weekendowe wypady.';
+            } else {
+                suggestion = ' - Bardzo lekki, idealny na jednodniowe wycieczki.';
+            }
+            
+            calculatorResult.innerHTML = `Całkowita waga plecaka: <span id="total-weight">${totalWeight.toFixed(1)}</span> kg${suggestion}`;
+        });
+        
+        // Program lojalnościowy
+        function addLoyaltyPoints(points) {
+            loyaltyPoints += points;
+            if (loyaltyPoints < 0) loyaltyPoints = 0;
+            
+            userPointsElement.textContent = loyaltyPoints;
+            
+            // Oblicz postęp do następnego poziomu
+            let nextLevel = 100;
+            if (loyaltyPoints >= 2000) nextLevel = 3000;
+            else if (loyaltyPoints >= 1000) nextLevel = 2000;
+            else if (loyaltyPoints >= 500) nextLevel = 1000;
+            else if (loyaltyPoints >= 200) nextLevel = 500;
+            
+            const progress = (loyaltyPoints % 100) / (nextLevel - Math.floor(loyaltyPoints / 100) * 100) * 100;
+            pointsProgressElement.style.width = `${progress}%`;
+            
+            pointsToNextElement.textContent = nextLevel - loyaltyPoints;
+            
+            // Zapisz punkty w localStorage
+            localStorage.setItem('wildtrail-loyalty-points', loyaltyPoints);
+            
+            // Aktualizuj korzyści
+            updateLoyaltyBenefits();
+        }
+        
+        function updateLoyaltyBenefits() {
+            let benefits = [
+                '1 punkt za każde 10 zł wydane w sklepie'
+            ];
+            
+            if (loyaltyPoints >= 200) {
+                benefits.push('✓ Darmowa dostawa od 200 pkt');
+            } else {
+                benefits.push('Darmowa dostawa od 200 pkt');
+            }
+            
+            if (loyaltyPoints >= 500) {
+                benefits.push('✓ 5% rabatu od 500 pkt');
+            } else {
+                benefits.push('5% rabatu od 500 pkt');
+            }
+            
+            if (loyaltyPoints >= 1000) {
+                benefits.push('✓ 10% rabatu od 1000 pkt');
+            } else {
+                benefits.push('10% rabatu od 1000 pkt');
+            }
+            
+            if (loyaltyPoints >= 2000) {
+                benefits.push('✓ 15% rabatu od 2000 pkt');
+            } else {
+                benefits.push('15% rabatu od 2000 pkt');
+            }
+            
+            benefitsListElement.innerHTML = benefits.map(benefit => {
+                if (benefit.startsWith('✓')) {
+                    return `<li style="color:#27ae60;">${benefit}</li>`;
+                }
+                return `<li>${benefit}</li>`;
+            }).join('');
+        }
+        
+        // Zapisz koszyk w localStorage
+        function saveCartToStorage() {
+            localStorage.setItem('wildtrail-cart', JSON.stringify(cart));
+        }
+        
+        // Zapisz listę życzeń w localStorage
+        function saveWishlistToStorage() {
+            localStorage.setItem('wildtrail-wishlist', JSON.stringify(wishlist));
+        }
+        
+        // Wczytaj koszyk z localStorage
+        function loadCartFromStorage() {
+            const savedCart = localStorage.getItem('wildtrail-cart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+                updateCartCount();
+            }
+        }
+        
+        // Wczytaj listę życzeń z localStorage
+        function loadWishlistFromStorage() {
+            const savedWishlist = localStorage.getItem('wildtrail-wishlist');
+            if (savedWishlist) {
+                wishlist = JSON.parse(savedWishlist);
+                updateWishlistCount();
+            }
+        }
+        
+        // Wczytaj punkty lojalnościowe z localStorage
+        function loadLoyaltyPoints() {
+            const savedPoints = localStorage.getItem('wildtrail-loyalty-points');
+            if (savedPoints) {
+                loyaltyPoints = parseInt(savedPoints);
+                userPointsElement.textContent = loyaltyPoints;
+                
+                // Oblicz postęp do następnego poziomu
+                let nextLevel = 100;
+                if (loyaltyPoints >= 2000) nextLevel = 3000;
+                else if (loyaltyPoints >= 1000) nextLevel = 2000;
+                else if (loyaltyPoints >= 500) nextLevel = 1000;
+                else if (loyaltyPoints >= 200) nextLevel = 500;
+                
+                const progress = (loyaltyPoints % 100) / (nextLevel - Math.floor(loyaltyPoints / 100) * 100) * 100;
+                pointsProgressElement.style.width = `${progress}%`;
+                
+                pointsToNextElement.textContent = nextLevel - loyaltyPoints;
+            }
+        }
+        
+        // Przycisk przejścia do kasy
+        checkoutBtn.addEventListener('click', function() {
+            alert('Dziękujemy za zakupy! Twoje zamówienie zostało złożone.');
+            cart = [];
+            updateCartCount();
+            updateCartDisplay();
+            cartElement.style.display = 'none';
+            overlay.style.display = 'none';
+        });
+        
+        // Inicjalizacja sklepu
+        initShop();
+    </script>
+</body>
+</html>
